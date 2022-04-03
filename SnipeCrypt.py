@@ -39,7 +39,7 @@ ClientStatus = load[0]["Client"]
 Status = load[0]["Status"]
 
 
-#JSON LOAD
+#AbiCode LoadHere
 l = open('./Router/Liquidity.json')
 p = open('./Router/PancakeSwap.json')
 u = open('./Router/UniswapV2.json')

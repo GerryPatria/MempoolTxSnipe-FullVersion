@@ -228,22 +228,16 @@ def SNIPEBNB():
     start_time = time.time()
     now = datetime.now()
     date_time = now.strftime("%m/%d/%Y,%H:%M:%S") 
+    
     global pair
     pair = contract.functions.getPair(TargetContractBuy, spend).call()
-    configApi= ConfigParser()
-    configApi.read("SnipeCrypt.ini")
-    spamapi = 'https://aywt3wreda.execute-api.eu-west-1.amazonaws.com/default/IsHoneypot?chain=bsc2&token='+configApi['API']['RugAddress']
-    response = request.urlopen(spamapi)
-    honeycheck = json.loads(response.read())
-    SetBuyTax = configApi['Premium']['SetBuyTax']
-    if (honeycheck['BuyTax'] >= int(configApi['Premium']['SetBuyTax']) or honeycheck['IsHoneypot'] == True):
-        print('[' + date_time + ']' + " [Info] HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Max Fee : ",honeycheck['BuyTax']," | Version BNB | [BUY]")
-        SNIPEBNB()
+    if pair != web3.toChecksumAddress('0x0000000000000000000000000000000000000000'):
+         print('[' + date_time + ']' + " [Info] Token Status : ",pair," | Version BNB | [TRUE]" )
+         LPBNB()
     else:
-        print('[' + date_time + ']' + " [Info] HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Max Fee : ",honeycheck['BuyTax']," | Version BNB | [BUY]") 
-        if pair != web3.toChecksumAddress('0x0000000000000000000000000000000000000000'):
-          print('[' + date_time + ']' +  " [Scan] Pair Token Found | Version BNB...")
-          LPBNB()
+        print('[' + date_time + ']' + " [Info] Token Status : ",pair," | Version BNB | [TRUE]" )
+
+    
 # SMART FUNCTION BNB ---------------------------------------------------------------------------------------------------------      
 
 
@@ -307,7 +301,19 @@ def verifcontract():
 def buy_bnb():
     start_time = time.time()
     now = datetime.now()
-    date_time = now.strftime("%m/%d/%Y,%H:%M:%S")      
+    date_time = now.strftime("%m/%d/%Y,%H:%M:%S")     
+    configApi= ConfigParser()
+    configApi.read("SnipeCrypt.ini")
+    spamapi = 'https://aywt3wreda.execute-api.eu-west-1.amazonaws.com/default/IsHoneypot?chain=bsc2&token='+configApi['API']['RugAddress']
+    SetBuyTax = configApi['Premium']['SetBuyTax']
+    response = request.urlopen(spamapi)
+    honeycheck = json.loads(response.read()) 
+    
+    if honeycheck['BuyTax'] >= int(configApi['Premium']['SetBuyTax']) or honeycheck['IsHoneypot'] == True:
+     print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [TRUE]")
+     buy_bnb()
+    else:
+     print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [FALSE]")
     print('[' + date_time + ']' +  " [Buys] Starting Buy Token | Version BNB...")
     currentNonce = web3.eth.get_transaction_count(WalletOwner)
     pancakeswap2_txn = contractbuy.functions.swapExactETHForTokens( 

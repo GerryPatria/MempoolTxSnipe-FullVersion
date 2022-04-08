@@ -300,7 +300,7 @@ def verifcontract():
     elif config['Version']['Type'] == '0':
         webbrowser.open_new_tab('https://bscscan.com/tx/'+web3.toHex(tx_token))
     print('[' + date_time + ']' +  " [Verf] Snipe Success [Verif] | Version BUSD...") 
-    os.system('py SCNTokenPro.py')
+    os.system('py SCNTokenPro.pyc')
     exit()
 
 # Buy ------------------------------------------------------------------------------------------------------------- 
@@ -432,7 +432,7 @@ def sell_bnb():
        webbrowser.open_new_tab('https://testnet.bscscan.com/tx/'+web3.toHex(tx_token))
     print('[' + date_time + ']' + " [Syst] Application is Restarting For (5) Seconds.")
     time.sleep(5)
-    os.system('py SCNTokenPro.py')
+    os.system('py SCNTokenPro.pyc')
     exit()
 # Sell  Function ---------------------------------------------------------------------------------------------------------  
 
@@ -643,5 +643,5 @@ while True:
         break
     if pil == '0':
         print('[' + date_time + ']' + " [Syst] Application is Restarting...")
-        os.system('py SCNTokenPro.py')
+        os.system('py SCNTokenPro.pyc')
         break

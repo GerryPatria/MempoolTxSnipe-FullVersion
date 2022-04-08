@@ -310,10 +310,10 @@ def buy_bnb():
     honeycheck = json.loads(response.read()) 
     
     if honeycheck['BuyTax'] >= int(configApi['Premium']['SetBuyTax']) or honeycheck['IsHoneypot'] == True:
-     print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [TRUE]")
+     print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [BLOCK]")
      buy_bnb()
     else:
-     print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [FALSE]")
+     print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [ALLOW]")
     print('[' + date_time + ']' +  " [Buys] Starting Buy Token | Version BNB...")
     currentNonce = web3.eth.get_transaction_count(WalletOwner)
     pancakeswap2_txn = contractbuy.functions.swapExactETHForTokens( 

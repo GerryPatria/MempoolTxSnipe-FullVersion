@@ -1,1 +1,1 @@
-py SCNTokenPro.py
+py SnipeCrypt.py

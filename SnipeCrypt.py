@@ -1,24 +1,27 @@
-# Libs Data
-from web3 import Web3
+# Library Import
+
+try:
+    from web3 import Web3
+except:
+    print( " [Erro] Module Web3 Not Installed | pip install web3 | [0813] [TRUE]")
+    input( " Press Enter to Quit Program...")
+
+try:
+    import keyboard
+except:
+    print( " [Erro] Module Keyboard Not Installed | pip install keyboard | [0815] [TRUE]")
+    input( " Press Enter to Quit Program...")
+
+from inspect import getblock
+from sqlite3 import Timestamp
 from threading import Timer
 from datetime import date, datetime
 from configparser import ConfigParser
-import json
-import time
-import logging
-import webbrowser
-import subprocess
-import ctypes
-import sys
-import os
-import requests
-import keyboard
-import asyncio
+import json,time,logging,webbrowser,subprocess,ctypes,sys,os
 from urllib import request
 from os import system
 
 sys.setrecursionlimit(10000)
-#hwid_get = str(subprocess.check_output('wmic csproduct get uuid'), 'utf-8').split('\n')[1].strip()
 os.system("") #allows different colour text to be used
 
 
@@ -70,50 +73,6 @@ contractbuy = web3.eth.contract(address=panRouterContractAddress, abi=panabi)
 contract = web3.eth.contract(address=uniswap_factory, abi=uniswap_factory_abi)
 tokenToBuy = TargetContractBuy
 
-
-# -----------------------------------------------------------------------------------------------------------------------
-
-# Start From Here.
-# New Detection Anti Rug Pull Scanner
-
-#delaySell = config['Premium']['SellDelay']
-#multiply = config['Premium']['MultiGas']
-
-#delayOnSellMs = 1e3 * delaySell,
-#currentNonce = 0
-#antiBotMultiTx = 1
-
-#if config['Premium']['AntiBot'] == '1':
-#   antiBotMultiTx != 0
-
-
-#transactionToDetect = (
-#  config['Premium']['FrontRunTransaction']
-#).toFixed(0),
-#skipBlock = config['Premium']['SkipBlocks']
-#countDown = date.__format__(config['Premium']['SetCountDown']);
-
-addLiquidityETH = "0xf305d719",
-addLiquidity = "0xe8e33700",
-addLiquidityDxsale = "0x267dd102",
-removeLiquidity = "0xbaa2abde",
-removeLiquidityETH = "0x02751cec",
-removeLiquidityETHSupportingFeeOnTransferTokens = "0xaf2979eb",
-removeLiquidityETHWithPermit = "0xded9382a",
-removeLiquidityETHWithPermitSupportingFeeOnTransferTokens = "0x5b0d5984",
-removeLiquidityWithPermit = "0x2195995c",
-
-
-#def getNonce(e) :
-#  return web3.eth.getTransaction(e)
-
-
-
-  
-
-# -----------------------------------------------------------------------------------------------------------------------
-
-
 # -----------------------------------------------------------------------------------------------------------------------
 class style(): # Class of different text colours - default is white
     BLACK = '\033[30m'
@@ -130,7 +89,17 @@ class style(): # Class of different text colours - default is white
 start_time = time.time()
 now = datetime.now()
 date_time = now.strftime("%m/%d/%Y,%H:%M:%S")  
-print(style.MAGENTA+'[' + date_time + ']' + " [Info] Loading Assets Library"+style.RESET)
+ClientSessionName = 'Dev'
+
+hwid_get = str(subprocess.check_output('wmic csproduct get uuid'), 'utf-8').split('\n')[1].strip()
+if hwid_get != '01FF1692-0AFB-084A-B92B-5EB73E3869C8':
+ ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | Failed to Connect")
+ print(style.RED+'[' + date_time + ']' + " [Info] Failed Get API |  System Unknown | SCNTokenPro is Exiting..."+style.RESET)
+ time.sleep(5)
+ exit()
+else:
+    print(style.MAGENTA+'[' + date_time + ']' + " [Info] Success Get API | System Approve | SCNTokenPro is Loading..."+style.RESET)
+
 
 print(style.MAGENTA) #change following text to magenta
 
@@ -141,7 +110,15 @@ print(style.WHITE)
 ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | is Loading...")
 
 
-# -----------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------
+def is_approve(self):
+    Approve = self.token_contract.functions.allowance(self.address ,self.router_address).call()
+    Aproved_quantity = self.token_contract.functions.balanceOf(self.address).call()
+    if int(Approve) <= int(Aproved_quantity):
+        return False
+    else:
+        return True
+
 
 # Call Function ---------------------------------------------------------------------------------------------
 sellTokenContract = web3.eth.contract(TargetContractSell, abi=sellAbi)
@@ -163,14 +140,12 @@ tokenValue2 = web3.fromWei(tokenValue, 'ether')
 # Call Function ---------------------------------------------------------------------------------------------
 
 os.system('cls')
-
-
-
+# Main Menu ------------------------------------------------------------------------------------------------------------- 
 def Program():
     start_time = time.time()
     now = datetime.now()
     date_time = now.strftime("%m/%d/%Y,%H:%M:%S")    
-    print( '[' + date_time + ']' +" [Welc] SCNTokenPro 2020 (C) | Build 4.11 | Tutorial Read ManualBook.txt")
+    print( '[' + date_time + ']' +" [Welc] SCNTokenPro 2020 (C) | Build 4.11 | Thanks to : "+style.YELLOW +ClientSessionName+style.RESET)
     if web3.isConnected():
         print( '[' + date_time + ']' + " [Info] Private Node is "+style.GREEN +"Connect"+style.RESET)
     if config['Version']['Type'] == '0':
@@ -178,7 +153,7 @@ def Program():
         logging.basicConfig(filename="./SystemLog/Function.Log",  level=logging.INFO)
         logging.info('[' + date_time + ']' + ' PROGRAM RUNNING , NETWORK IS MAINNET')
     elif config['Version']['Type']  == '1':
-        print('[' + date_time + ']' + " [Info] Network is "+ style.RED + "Testnet"+style.RESET)
+        print('[' + date_time + ']' + " [Info] Network is "+ style.YELLOW + "Testnet"+style.RESET)
         logging.basicConfig(filename="./SystemLog/Function.Log",  level=logging.INFO)
         logging.info('[' + date_time + ']' + ' PROGRAM RUNNING , NETWORK IS TESTNET')
     if config['Version']['BuyType'] == '0':
@@ -203,10 +178,60 @@ def Program():
          print('[' + date_time + ']' + f" [Info] Convert {mysymbl} : {style.GREEN}{str(data)}{style.RESET} {symbol}.")
     walletBalance = round(humanReadable, -(int("{:e}".format(humanReadable).split('e')[1]) - 4))
     ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | Tokens Detected: " + str(symbol) + " | Tokens Name: " + str(name)  + " | Wallet Balance: " + str(walletBalance) + " BNB")
-        
-# Main Menu ------------------------------------------------------------------------------------------------------------- 
-
-# SMART FUNCTION BNB ---------------------------------------------------------------------------------------------------------
+# GetFilterBlocks
+def GetFilterBlock():
+    start_time = time.time()
+    now = datetime.now()
+    date_time = now.strftime("%m/%d/%Y,%H:%M:%S") 
+    getblockhigh = web3.eth.block_number
+    blocksbot = buy_bnb
+    waitingBlocks = 10
+    waitForHigh = int(blocksbot(getblockhigh)) + waitingBlocks
+    print('[' + date_time + ']' + ' [Info] Current Block Transaction : ' , getblockhigh)
+    while True:
+        try:
+            currentBlock = blocksbot.getBlockHigh()
+            print('[' + date_time + ']' + ' [Info] Current Block Transaction : ' , waitForHigh,' | Now Block : ',currentBlock)
+            if waitForHigh <= currentBlock:
+                        buy_bnb()
+                        break
+            else:
+                        print('[' + date_time + ']' + ' [Info] Current Block Transaction : ' , waitForHigh,' | Now Block : ',currentBlock)
+                        break
+        except Exception as e:
+            print(e)
+            break
+# CheckLiquidityBUSD ------------------------------------------------------------------------------------------------------------- 
+def LPBUSD():
+    start_time = time.time()
+    now = datetime.now()
+    date_time = now.strftime("%m/%d/%Y,%H:%M:%S")
+    print('[' + date_time + ']' +' [Scan] ----- SCAN LIQUIDITY [BUSD] -----')
+    lp = pair
+    lpcontract = web3.eth.contract(address=lp, abi=lpabi)
+    balance = lpcontract.functions.getReserves().call()
+    b = balance[0]
+    #print(b)
+    if b > 0:
+        print('[' + date_time + ']' +' [Scan] ----- LIQUIDITY FOUND [BUSD] -----')
+        buy_busd()
+    else:
+        print('[' + date_time + ']' +' [Scan] ----- LIQUIDITY NOT FOUND [BUSD] -----')
+        BUYBUSD()
+# CheckPairBUSD ------------------------------------------------------------------------------------------------------------- 
+def SNIPEBUSD():
+    start_time = time.time()
+    now = datetime.now()
+    date_time = now.strftime("%m/%d/%Y,%H:%M:%S") 
+    print('[' + date_time + ']' +' [Scan] ----- SCAN PAIR [BUSD] -----')
+    
+    global pair
+    pair = contract.functions.getPair(TargetContractBuy, busd).call()
+    #print('[' + date_time + ']' + pair)
+    if pair != web3.toChecksumAddress('0x0000000000000000000000000000000000000000'):
+        print('[' + date_time + ']' +' [Scan] ----- PAIR FOUND [BUSD] -----')
+        LPBUSD()
+# CheckLiquidityBnb ------------------------------------------------------------------------------------------------------------- 
 def LPBNB():
     start_time = time.time()
     now = datetime.now()
@@ -223,7 +248,7 @@ def LPBNB():
     else:
         print('[' + date_time + ']' +  " [Scan] Liquidity Not Found | Version BNB...")
         BUYBNB()
-
+# CheckPairBNB ------------------------------------------------------------------------------------------------------------- 
 def SNIPEBNB():
     start_time = time.time()
     now = datetime.now()
@@ -236,16 +261,12 @@ def SNIPEBNB():
          LPBNB()
     else:
         print('[' + date_time + ']' + " [Info] Token Status : ",pair," | Version BNB | [TRUE]" )
-
-    
-# SMART FUNCTION BNB ---------------------------------------------------------------------------------------------------------      
-
-
+# Monitor Feature ------------------------------------------------------------------------------------------------------------- 
 def monitor():
  start_time = time.time()
  now = datetime.now()
  date_time = now.strftime("%m/%d/%Y,%H:%M:%S")
- print(style.RED + '[' + date_time + ']' +  " [Info] Monitor Price Target Start..."+style.RESET)
+ print(style.RED + '[' + date_time + ']' +  " [Info] Monitor Price Target Starting..."+style.RESET)
  while True:
     # Check Profit Now Function ----------------------------------------------------------------------------------------------  
     start_time = time.time()
@@ -274,7 +295,7 @@ def monitor():
             sell_bnb()
         elif config['Version']['BuyType'] == '1':
             sell_busd()
-
+# Verif BUSD ------------------------------------------------------------------------------------------------------------- 
 def verifcontract():
     sellTokenContract = web3.eth.contract(busd, abi=sellAbi)
     approve = sellTokenContract.functions.approve(routerTestnet, 115792089237316195423570985008687907853269984665640564039457584007913129639935
@@ -296,8 +317,7 @@ def verifcontract():
     print('[' + date_time + ']' +  " [Verf] Snipe Success [Verif] | Version BUSD...") 
     os.system('py SCNTokenPro.pyc')
     exit()
-
-# Buy ------------------------------------------------------------------------------------------------------------- 
+# Buy BNB ------------------------------------------------------------------------------------------------------------- 
 def buy_bnb():
     start_time = time.time()
     now = datetime.now()
@@ -314,8 +334,7 @@ def buy_bnb():
      buy_bnb()
     else:
      print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [ALLOW]")
-    print('[' + date_time + ']' +  " [Buys] Starting Buy Token | Version BNB...")
-    currentNonce = web3.eth.get_transaction_count(WalletOwner)
+     print('[' + date_time + ']' +  " [Buys] Starting Buy Token | Version BNB...")
     pancakeswap2_txn = contractbuy.functions.swapExactETHForTokens( 
     0, #FALSE, #--- this function write like? address or?
     [spend,tokenToBuy],
@@ -372,8 +391,7 @@ def buy_busd():
     elif config['Version']['Type'] == '0':
      webbrowser.open_new_tab('https://bscscan.com/tx/'+web3.toHex(tx_token))
     print('[' + date_time + ']' +  " [Buys] Snipe Success [BUY] | Version BUSD...")   
-    monitor()
-# Buy BUSD -------------------------------------------------------------------------------------------------------------  
+    monitor()  
 # Sell  Function BNB ---------------------------------------------------------------------------------------------------------
 def sell_bnb():  
     sellTokenContract = web3.eth.contract(TargetContractSell, abi=sellAbi)
@@ -409,11 +427,11 @@ def sell_bnb():
     signed_txn = web3.eth.account.sign_transaction(
     approve, private_key=config['TokenSetup']['PrivateKey'])
     tx_token = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    print('[' + date_time + ']' + " [Warn] ----- GENERATING HASH TX -----")
+    print('[' + date_time + ']' +  " [Sell] Generating TXHash [APPROVE] | Version BNB...")
     logging.basicConfig(filename="./SystemLog/Function.Log",  level=logging.INFO)
     logging.info('[' + date_time + ']' + ' APPROVE SELL IS EXECUTE | YOUR TX HASH INFO :: ' + web3.toHex(tx_token))
     #print('[' + date_time + ']' + " APPROVED PROGRAM IS EXECUTE | YOUR TX HASH INFO :: " + web3.toHex(tx_token))
-    print('[' + date_time + ']' + " [Warn] ----- SYSTEM OK, GOING TO SELL -----")
+    print('[' + date_time + ']' +  " [Sell] Approve Token [TRUE] | Version BNB...")
     time.sleep(6) # Waiting Approve TimeStamp
     pancakeswap2_txn = contractbuy.functions.swapExactTokensForETH(
         balance, 0,
@@ -428,9 +446,9 @@ def sell_bnb():
     signed_txn = web3.eth.account.sign_transaction(
     pancakeswap2_txn, private_key=config['TokenSetup']['PrivateKey'])
     tx_token = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    print('[' + date_time + ']' + " [Warn] ----- GENERATING HASH TX -----")
+    print('[' + date_time + ']' +  " [Sell] Generating TXHash [SELL] | Version BNB...")
     logging.info('[' + date_time + ']' + ' SELL IS EXECUTE | YOUR TX HASH INFO :: ' + web3.toHex(tx_token))
-    print('[' + date_time + ']' + " [Warn] ----- SELL TOKEN SUCCESS -----")
+    print('[' + date_time + ']' +  " [Sell] Sell Token [TRUE] | Version BNB...")
     time.sleep(6)   
     if config['Version']['Type']  == '0':
        webbrowser.open_new_tab('https://bscscan.com/tx/'+web3.toHex(tx_token))
@@ -440,8 +458,6 @@ def sell_bnb():
     time.sleep(5)
     os.system('py SCNTokenPro.pyc')
     exit()
-# Sell  Function ---------------------------------------------------------------------------------------------------------  
-
 # Sell  Function BUSD ---------------------------------------------------------------------------------------------------------
 def sell_busd():  
     sellTokenContract = web3.eth.contract(TargetContractSell, abi=sellAbi)
@@ -477,10 +493,10 @@ def sell_busd():
     signed_txn = web3.eth.account.sign_transaction(
     approve, private_key=config['TokenSetup']['PrivateKey'])
     tx_token = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    print('[' + date_time + ']' + " [Warn] ----- GENERATING HASH TX -----")
+    print('[' + date_time + ']' +  " [Sell] Generating TXHash [APPROVE] | Version BNB...")
     logging.basicConfig(filename="./SystemLog/Function.Log",  level=logging.INFO)
     logging.info('[' + date_time + ']' + ' APPROVE SELL IS EXECUTE | YOUR TX HASH INFO :: ' + web3.toHex(tx_token))
-    print('[' + date_time + ']' + " [Warn] ----- SYSTEM OK, GOING TO SELL -----")
+    print('[' + date_time + ']' +  " [Sell] Approve Token [TRUE] | Version BNB...")
     time.sleep(6) # Waiting Approve TimeStamp
     pancakeswap2_txn = contractbuy.functions.swapExactTokensForTokens(
         balance, 0,
@@ -495,102 +511,17 @@ def sell_busd():
     signed_txn = web3.eth.account.sign_transaction(
     pancakeswap2_txn, private_key=config['TokenSetup']['PrivateKey'])
     tx_token = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    print('[' + date_time + ']' + " [Warn] ----- GENERATING HASH TX -----")
+    print('[' + date_time + ']' +  " [Sell] Generating TXHash [SELL] | Version BNB...")
     logging.info('[' + date_time + ']' + ' SELL IS EXECUTE | YOUR TX HASH INFO :: ' + web3.toHex(tx_token))
-    print('[' + date_time + ']' + " [Warn] ----- SELL TOKEN SUCCESS -----")
+    print('[' + date_time + ']' +  " [Sell] Sell Token [TRUE] | Version BNB...")
     time.sleep(6)   
     if config['Version']['Type']  == '0':
        webbrowser.open_new_tab('https://bscscan.com/tx/'+web3.toHex(tx_token))
     elif config['Version']['Type']  == '1' :   
        webbrowser.open_new_tab('https://testnet.bscscan.com/tx/'+web3.toHex(tx_token))
-    os.system('pause')
-    exit() 
-# Sell  Function ---------------------------------------------------------------------------------------------------------  
-
-# -----------------------------------------------------------------------------------------------------------
-
-#def monitorrugpulltest():
-#     print(style.YELLOW + '[' + date_time + ']' +  "[Token] Starting Monitor RugPull...")
-#     nonce = web3.eth.get_transaction_count(WalletOwner)
-#     if (nonce != nonce and nonce.data.includes(TargetContractBuy) and nonce.data.includes("0xbaa2abde") and nonce.data.includes("0x02751cec") and nonce.data.includes("0xaf2979eb") and nonce.data.includes("0xded9382a") and nonce.data.includes("0x5b0d5984") and nonce.data.includes("0x2195995c")):
-#         print(style.YELLOW + '[' + date_time + ']' +  "[Token] Rugpull Detected...")
-#         print(style.YELLOW + '[' + date_time + ']' +  "[Token] Start Selling Token...")
-#         if config['Version']['BuyType'] == '0':
-#            sell_bnb()
-#         elif config['Version']['BuyType'] == '1':
-#            sell_busd()
-# SMART FUNCTION BUSD ---------------------------------------------------------------------------------------------------------
-def LPBUSD():
-    start_time = time.time()
-    now = datetime.now()
-    date_time = now.strftime("%m/%d/%Y,%H:%M:%S")
-    print('[' + date_time + ']' +' [Scan] ----- SCAN LIQUIDITY [BUSD] -----')
-    lp = pair
-    lpcontract = web3.eth.contract(address=lp, abi=lpabi)
-    balance = lpcontract.functions.getReserves().call()
-    b = balance[0]
-    #print(b)
-    if b > 0:
-        print('[' + date_time + ']' +' [Scan] ----- LIQUIDITY FOUND [BUSD] -----')
-        buy_busd()
-    else:
-        print('[' + date_time + ']' +' [Scan] ----- LIQUIDITY NOT FOUND [BUSD] -----')
-        BUYBUSD()
-
-def SNIPEBUSD():
-    start_time = time.time()
-    now = datetime.now()
-    date_time = now.strftime("%m/%d/%Y,%H:%M:%S") 
-    print('[' + date_time + ']' +' [Scan] ----- SCAN PAIR [BUSD] -----')
-    
-    global pair
-    pair = contract.functions.getPair(TargetContractBuy, busd).call()
-    #print('[' + date_time + ']' + pair)
-    if pair != web3.toChecksumAddress('0x0000000000000000000000000000000000000000'):
-        print('[' + date_time + ']' +' [Scan] ----- PAIR FOUND [BUSD] -----')
-        LPBUSD()
-# SMART FUNCTION BUSD --------------------------------------------------------------------------------------------------------- 
-
-# CHECKER ---------------------------------------------------------------------------------------------------------------------
-def honeypotbuytax():
-    start_time = time.time()
-    now = datetime.now()
-    date_time = now.strftime("%m/%d/%Y,%H:%M:%S") 
-    configApi= ConfigParser()
-    configApi.read("SnipeCrypt.ini")
-    spamapi = 'https://aywt3wreda.execute-api.eu-west-1.amazonaws.com/default/IsHoneypot?chain=bsc2&token='+configApi['API']['RugAddress']
-    response = request.urlopen(spamapi)
-    honeycheck = json.loads(response.read())
-    if (honeycheck['BuyTax'] >= int(configApi['Premium']['SetBuyTax'])):
-        print('[' + date_time + ']' +' [Scan] ----- CHECKER SCAN [ANTIBOT] -----')
-        print('[' + date_time + ']' + " [Info] HIGH TAX BUY : ",honeycheck['BuyTax'])
-        honeypotbuytax()
-    else:
-        print('[' + date_time + ']' +' [Scan] ----- CHECKER SCAN [ANTIBOT] -----')
-        print('[' + date_time + ']' + " [Info] TAX NORMAL, BUY NOW",honeycheck['BuyTax'])   
-        if config['Version']['BuyType'] == '0':
-               SNIPEBNB()
-        elif config['Version']['BuyType'] == '1':
-            buy_busd()
-def honeypotselltax():
-    start_time = time.time()
-    now = datetime.now()
-    date_time = now.strftime("%m/%d/%Y,%H:%M:%S") 
-    configApi= ConfigParser()
-    configApi.read("SnipeCrypt.ini")
-    spamapi = 'https://aywt3wreda.execute-api.eu-west-1.amazonaws.com/default/IsHoneypot?chain=bsc2&token='+configApi['API']['RugAddress']
-    response = request.urlopen(spamapi)
-    honeycheck = json.loads(response.read())
-    if(honeycheck['SellTax'] >= int(configApi['Premium']['SetSellTax'])) :
-        print('[' + date_time + ']' + " [Info] HIGH SELL TAX : ",honeycheck['SellTax'] ,"FLOOD SELL HIGH TAX") 
-        HONEYPOTSELL()
-    else:
-        print('[' + date_time + ']' +' [Scan] ----- CHECKER SCAN [ANTIBOT] -----')
-        print('[' + date_time + ']' + " [Info] TAX NORMAL, BUY NOW",honeycheck['SellTax'])   
-        if config['Version']['BuyType'] == '0':
-               sell_bnb()
-        elif config['Version']['BuyType'] == '1':
-            sell_busd()
+    time.sleep(5)
+    os.system('py SCNTokenPro.pyc')
+    exit()
 
 run = True
 def BUYBNB():
@@ -605,21 +536,6 @@ def BUYBUSD():
 	SNIPEBUSD()
 	if run:
 		Timer(0, BUYBUSD).start()
-
-run = True
-def HONEYPOTBUY():
-	global run
-	honeypotbuytax()
-	if run:
-		Timer(0, HONEYPOTBUY).start()
-
-run = True
-def HONEYPOTSELL():
-	global run
-	honeypotselltax()
-	if run:
-		Timer(0, HONEYPOTSELL).start()
-
 
 while True:
     Program()

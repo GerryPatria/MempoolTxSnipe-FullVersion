@@ -155,10 +155,10 @@ def Program():
         logging.basicConfig(filename="./SystemLog/Function.Log",  level=logging.INFO)
         logging.info('[' + date_time + ']' + ' PROGRAM RUNNING , NETWORK IS TESTNET')
     if config['Version']['BuyType'] == '0':
-     print('[' + date_time + ']' + " [Info] Swap Amount: ",config['ProfitSetting']['Purchase'], mysymbl)   
+     print('[' + date_time + ']' + " [Info] Swap Amount : ",config['ProfitSetting']['Purchase'], mysymbl)   
      #print('[' + date_time + ']' + " [Info] BALANCE: ",humanReadable,"TOKEN:", mysymbl)
     elif config['Version']['BuyType'] == '1':
-     print('[' + date_time + ']' + " [Info] Swap Amount: ",config['ProfitSetting']['Purchase'], mysymbl)   
+     print('[' + date_time + ']' + " [Info] Swap Amount : ",config['ProfitSetting']['Purchase'], mysymbl)   
      #print('[' + date_time + ']' + f" [Info] BALANCE SNIPER: {float(tokenValue2)} NAME: {name} SYMBOL: {symbol}.")  
 # Call Function Wallet --------------------------------------------------------------------------------------------------
      
@@ -168,12 +168,12 @@ def Program():
         if config['Version']['BuyType'] == '0':
          test = contractbuy.functions.getAmountsOut(balance,[TargetContractSell, spend]).call()
          data = (test[1] * 10 **-0x12)
-         convertWBNB = round(data, -(int("{:e}".format(data).split('e')[1]) - 4))
-         print('[' + date_time + ']' + f" [Info] Convert {mysymbl} : {style.GREEN}{str(convertWBNB)}{style.RESET} {symbol}.")
+         convertWBNB = round(data, -(int("{:e}".format(data).split('e')[1]) - 1))
+         print('[' + date_time + ']' + f" [Info] Convert {symbol} - {mysymbl} : {style.GREEN}{str(convertWBNB)}{style.RESET}")
         elif config['Version']['BuyType'] == '1':
          test = contractbuy.functions.getAmountsOut(balance,[TargetContractSell, tokenB]).call()
          data = (test[1] * 10 **-0x12)
-         print('[' + date_time + ']' + f" [Info] Convert {mysymbl} : {style.GREEN}{str(data)}{style.RESET} {symbol}.")
+         print('[' + date_time + ']' + f" [Info] Convert {symbol} - {mysymbl} : {style.GREEN}{str(data)}{style.RESET}")
     walletBalance = round(humanReadable, -(int("{:e}".format(humanReadable).split('e')[1]) - 4))
     ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | Tokens Detected: " + str(symbol) + " | Tokens Name: " + str(name)  + " | Wallet Balance: " + str(walletBalance) + " BNB")
 # GetFilterBlocks
@@ -234,31 +234,32 @@ def LPBNB():
     start_time = time.time()
     now = datetime.now()
     date_time = now.strftime("%m/%d/%Y,%H:%M:%S")
-    print('[' + date_time + ']' +  " [Scan] Start Scan Liquidity | Version BNB...")
+    print('[' + date_time + ']' +  " [Scan] Start Scan Liquidity | Version BNB | [TRUE]")
     lp = pair
     lpcontract = web3.eth.contract(address=lp, abi=lpabi)
     balance = lpcontract.functions.getReserves().call()
     b = balance[0]
     #print(b)
     if b > 0:
-        print('[' + date_time + ']' +  " [Scan] Liquidity Found | Version BNB...")
+        print('[' + date_time + ']' +  " [Scan] Liquidity Found | Version BNB | [TRUE]")
         buy_bnb()
     else:
-        print('[' + date_time + ']' +  " [Scan] Liquidity Not Found | Version BNB...")
+        print('[' + date_time + ']' +  " [Scan] Liquidity Not Found | Version BNB | [FALSE]")
         BUYBNB()
 # CheckPairBNB ------------------------------------------------------------------------------------------------------------- 
 def SNIPEBNB():
     start_time = time.time()
     now = datetime.now()
     date_time = now.strftime("%m/%d/%Y,%H:%M:%S") 
+    print('[' + date_time + ']' +  " [Buys] Buy Token Running | Version BNB | [TRUE]")
     
     global pair
     pair = contract.functions.getPair(TargetContractBuy, spend).call()
     if pair != web3.toChecksumAddress('0x0000000000000000000000000000000000000000'):
-         print('[' + date_time + ']' + " [Info] Token Status : ",pair," | Version BNB | [TRUE]" )
+         print('[' + date_time + ']' + " [Info] Token Status : Found | Version BNB | [TRUE]" )
          LPBNB()
     else:
-        print('[' + date_time + ']' + " [Info] Token Status : ",pair," | Version BNB | [TRUE]" )
+        print('[' + date_time + ']' + " [Info] Token Status : NotFound | Version BNB | [TRUE]" )
 # Monitor Feature ------------------------------------------------------------------------------------------------------------- 
 def monitor():
  start_time = time.time()
@@ -280,7 +281,7 @@ def monitor():
      datafinal = data3 * int(config['ProfitSetting']['GetProfit'])
      ConvertProfit = round(data, -(int("{:e}".format(data).split('e')[1]) - 4))
      ConvertProfit2 = round(datafinal, -(int("{:e}".format(datafinal).split('e')[1]) - 4))
-     print('[' + date_time + ']','[Info] HOLD/PROFIT (NOW/TP) BNB:',str(ConvertProfit),str(ConvertProfit2))
+     print('[' + date_time + ']','[Info] HOLD/PROFIT (NOW/TP) BNB:',style.YELLOW ,str(ConvertProfit),style.RESET,style.GREEN,str(ConvertProfit2),style.RESET)
     elif config['Version']['BuyType'] == '1':
      test = contractbuy.functions.getAmountsOut(balance,[TargetContractSell, busd]).call()
      data = (test[1] * 10 **-0x12)
@@ -293,6 +294,11 @@ def monitor():
             sell_bnb()
         elif config['Version']['BuyType'] == '1':
             sell_busd()
+    if keyboard.is_pressed("b"):
+        if config['Version']['BuyType'] == '0':
+            BUYBNB()
+        elif config['Version']['BuyType'] == '1':
+            BUYBUSD()
 # Verif BUSD ------------------------------------------------------------------------------------------------------------- 
 def verifcontract():
     sellTokenContract = web3.eth.contract(busd, abi=sellAbi)
@@ -313,7 +319,7 @@ def verifcontract():
     elif config['Version']['Type'] == '0':
         webbrowser.open_new_tab('https://bscscan.com/tx/'+web3.toHex(tx_token))
     print('[' + date_time + ']' +  " [Verf] Snipe Success [Verif] | Version BUSD...") 
-    os.system('py SCNTokenPro.pyc')
+    os.system('py SnipeCrypt.py')
     exit()
 # Buy BNB ------------------------------------------------------------------------------------------------------------- 
 def buy_bnb():
@@ -328,10 +334,10 @@ def buy_bnb():
     honeycheck = json.loads(response.read()) 
     
     if honeycheck['BuyTax'] >= int(configApi['Premium']['SetBuyTax']) or honeycheck['IsHoneypot'] == True:
-     print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [BLOCK]")
+     print('[' + date_time + ']' + " [Info] HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [BLOCK]")
      buy_bnb()
     else:
-     print('[' + date_time + ']' + " [Info] Token Status : ",pair," | HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [ALLOW]")
+     print('[' + date_time + ']' + " [Info] HoneyPotToken : ",honeycheck['IsHoneypot']," | Limit Tax : ",SetBuyTax," | Tax Fee : ",honeycheck['BuyTax']," | Version BNB | [ALLOW]")
      print('[' + date_time + ']' +  " [Buys] Starting Buy Token | Version BNB...")
     pancakeswap2_txn = contractbuy.functions.swapExactETHForTokens( 
     0, #FALSE, #--- this function write like? address or?
@@ -454,7 +460,7 @@ def sell_bnb():
        webbrowser.open_new_tab('https://testnet.bscscan.com/tx/'+web3.toHex(tx_token))
     print('[' + date_time + ']' + " [Syst] Application is Restarting For (5) Seconds.")
     time.sleep(5)
-    os.system('py SCNTokenPro.pyc')
+    os.system('py SnipeCrypt.py')
     exit()
 # Sell  Function BUSD ---------------------------------------------------------------------------------------------------------
 def sell_busd():  
@@ -518,7 +524,7 @@ def sell_busd():
     elif config['Version']['Type']  == '1' :   
        webbrowser.open_new_tab('https://testnet.bscscan.com/tx/'+web3.toHex(tx_token))
     time.sleep(5)
-    os.system('py SCNTokenPro.pyc')
+    os.system('py SnipeCrypt.py')
     exit()
 
 run = True
@@ -563,5 +569,5 @@ while True:
         break
     if pil == '0':
         print('[' + date_time + ']' + " [Syst] Application is Restarting...")
-        os.system('py SCNTokenPro.pyc')
+        os.system('py SnipeCrypt.py')
         break

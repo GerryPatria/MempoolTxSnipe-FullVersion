@@ -12,8 +12,6 @@ except:
     print( " [Erro] Module Keyboard Not Installed | pip install keyboard | [0815] [TRUE]")
     input( " Press Enter to Quit Program...")
 
-from inspect import getblock
-from sqlite3 import Timestamp
 from threading import Timer
 from datetime import date, datetime
 from configparser import ConfigParser

@@ -99,7 +99,6 @@ def checktime():
    ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | is Expired")
    print('System Expired | ', 'Date Now : ',date_time, '| Date Expired : ' ,currenttime)
    time.sleep(3)
-   #os.remove("demofile.txt")
    exit()
   else : 
    ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | is Running")

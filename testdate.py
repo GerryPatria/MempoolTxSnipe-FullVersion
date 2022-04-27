@@ -5,7 +5,7 @@ import time
 
 
 start_time = time.time()
-now = datetime.now()
+now = datetime.now() 
 date_time = now.strftime("%m/%d/%Y,%H:%M:%S") 
 currenttime =  '04/11/2022,13:20:34'
 if (currenttime < date_time):
@@ -16,6 +16,4 @@ else :
 run = True
 def timechecks():
 	global run
-	timechecks()
-	if run:
-		Timer(0, timechecks).start()
+	timechecks()                                                                                                       

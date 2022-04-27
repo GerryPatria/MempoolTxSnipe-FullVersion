@@ -25,10 +25,21 @@ os.system("") #allows different colour text to be used
 
 
 #GenerateLicense ----------------------------------------------------------------------------------
-#AppVer = '2.31'
-#VerCheck = '2.31'
-
+AppVer = '2.41'
+currenttime =  '05/12/2023,05:30:00'
+ClientSessionName = 'DollarBulls'
 # Read License ------------------------------------------------------------------------------------
+LicUrls = 'https://upd.eventoffair.com/app_tracker.json'
+response = request.urlopen(LicUrls)
+data = json.loads(response.read())
+# Get Connector PC
+load = data["gerry"]
+# Get Connector PC
+UserHWID = load[0]["UserConnector"]
+AppType = load[0]["AppType"]
+VerCheck = load[0]["AppVer"]
+ClientStatus = load[0]["Client"]
+Status = load[0]["Status"]
 
 
 #AbiCode LoadHere
@@ -90,25 +101,34 @@ now = datetime.now()
 date_time = now.strftime("%m/%d/%Y,%H:%M:%S")
 
 
-currenttime =  '04/11/2022,15:31:00'
-ClientSessionName = 'Dev'
-
 
 def checktime():
   if (currenttime < date_time):
    ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | is Expired")
    print('System Expired | ', 'Date Now : ',date_time, '| Date Expired : ' ,currenttime)
    time.sleep(3)
-   #os.remove("demofile.txt")
+   os.remove("SnipeCrypt.pyc")
    exit()
   else : 
    ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | is Running")
   #print('System Running | ', 'Date Now : ',date_time, '| Date Expired : ' ,currenttime)
 
-
+if os.path.isfile('SnipeCrypt.pyc'):
+    checktime()
+else:
+    print('[' + date_time + ']' + ' [Err] File Name Has Changed. | Dont Change File Name.')
+    time.sleep(3)
+    exit()
 
 hwid_get = str(subprocess.check_output('wmic csproduct get uuid'), 'utf-8').split('\n')[1].strip()
-if hwid_get != '01FF1692-0AFB-084A-B92B-5EB73E3869C8':
+
+if(AppVer != VerCheck):
+     print('[' + date_time + ']' + ' [Err] YOUR APP IS NOT VERIFIED, UPDATE APP Now BUILD UPDATE :: ',VerCheck)
+     logging.basicConfig(filename="./SystemLog/Error.Log",  level=logging.INFO)
+     logging.info('[' + date_time + ']' + ' YOUR APP IS NOT VERIFIED..')
+     os.system('pause')
+     exit()
+if hwid_get != UserHWID:
  ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | Failed to Connect")
  print(style.RED+'[' + date_time + ']' + " [Info] Failed Get API |  System Unknown | SCNTokenPro is Exiting..."+style.RESET)
  time.sleep(5)
@@ -162,7 +182,7 @@ def Program():
     start_time = time.time()
     now = datetime.now()
     date_time = now.strftime("%m/%d/%Y,%H:%M:%S")    
-    print( '[' + date_time + ']' +" [Welc] SCNTokenPro 2020 (C) | Build 4.11 | Thanks to : "+style.YELLOW +ClientSessionName+style.RESET)
+    print( '[' + date_time + ']' +" [Welc] SCNTokenPro 2020 (C) | Build "+AppVer+" | License to : "+style.YELLOW +ClientSessionName+style.RESET)
     if web3.isConnected():
         print( '[' + date_time + ']' + " [Info] Private Node is "+style.GREEN +"Connect"+style.RESET)
     if config['Version']['Type'] == '0':
@@ -175,9 +195,15 @@ def Program():
         logging.info('[' + date_time + ']' + ' PROGRAM RUNNING , NETWORK IS TESTNET')
     if config['Version']['BuyType'] == '0':
      print('[' + date_time + ']' + " [Info] Swap Amount : ",config['ProfitSetting']['Purchase'], mysymbl)   
+     getprofit = 'Date: '+date_time+'\n''ClientName: '+ClientStatus+'\n'+'TargetToken: '+bnb+'\n'+'Balance Now: '+str(humanReadable)+ mysymbl
+     monitor_url ='https://api.telegram.org/bot5117407691:AAEqI64tLr5hDYW-rhIqDKKi98hJMKJRJbU/sendMessage?chat_id=2077137955&text='+getprofit
+     requests.get(monitor_url)
      #print('[' + date_time + ']' + " [Info] BALANCE: ",humanReadable,"TOKEN:", mysymbl)
     elif config['Version']['BuyType'] == '1':
-     print('[' + date_time + ']' + " [Info] Swap Amount : ",config['ProfitSetting']['Purchase'], mysymbl)   
+     print('[' + date_time + ']' + " [Info] Swap Amount : ",config['ProfitSetting']['Purchase'], mysymbl) 
+     getprofit = 'Date: '+date_time+'\n''ClientName: '+ClientStatus+'\n'+'TargetToken: '+busd+'\n'+'Balance Now: '+str(humanReadable)+ mysymbl
+     monitor_url ='https://api.telegram.org/bot5117407691:AAEqI64tLr5hDYW-rhIqDKKi98hJMKJRJbU/sendMessage?chat_id=2077137955&text='+getprofit  
+     requests.get(monitor_url)
      #print('[' + date_time + ']' + f" [Info] BALANCE SNIPER: {float(tokenValue2)} NAME: {name} SYMBOL: {symbol}.")  
 # Call Function Wallet --------------------------------------------------------------------------------------------------
      
@@ -300,16 +326,19 @@ def monitor():
      test = contractbuy.functions.getAmountsOut(balance,[TargetContractSell, spend]).call()
      data = (test[1] * 10 **-0x12)
      data3 = (test[1] * 10 **-0x12) * 5
-     datafinal = data3 * int(config['ProfitSetting']['GetProfit'])
      ConvertProfit = round(data, -(int("{:e}".format(data).split('e')[1]) - 4))
-     ConvertProfit2 = round(datafinal, -(int("{:e}".format(datafinal).split('e')[1]) - 4))
-     print('[' + date_time + ']','[Info] HOLD/PROFIT (NOW/TP) BNB:',style.YELLOW ,str(ConvertProfit),style.RESET,style.GREEN,str(ConvertProfit2),style.RESET)
+     #ConvertProfit2 = round(datafinal, -(int("{:e}".format(datafinal).split('e')[1]) - 4))
+     ConvertProfit2 = config['ProfitSetting']['GetProfit']
+     print('[' + date_time + ']','[Info] HOLD/PROFIT (NOW/TP) BNB:',style.YELLOW ,str(ConvertProfit),style.RESET,'| Target Profit: ',style.GREEN,ConvertProfit2,style.RESET,'| Press B to Buy | Press S to Sell ')
     elif config['Version']['BuyType'] == '1':
      test = contractbuy.functions.getAmountsOut(balance,[TargetContractSell, busd]).call()
      data = (test[1] * 10 **-0x12)
      data3 = (test[1] * 10 **-0x12) * 5
      datafinal = data3 * int(config['ProfitSetting']['GetProfit'])
-     print('[' + date_time + ']','[Info] HOLD/PROFIT (NOW/TP) BUSD:',str(data),str(datafinal))
+     #datafinal = data3 * int(config['ProfitSetting']['GetProfit'])
+     datafinal = int(config['ProfitSetting']['GetProfit'])
+     print('[' + date_time + ']','[Info] HOLD/PROFIT (NOW/TP) BUSD:',str(data),int(datafinal))
+     print('[' + date_time + ']','[Info] HOLD/PROFIT (NOW/TP) BNB:',style.YELLOW ,str(ConvertProfit),style.RESET,'| Target Profit: ',style.GREEN,ConvertProfit2,style.RESET,'| Press B to Buy | Press S to Sell ')
 # Check Profit Now Function ---------------------------------------------------------------------------------------------- 
     if keyboard.is_pressed("s"):
         if config['Version']['BuyType'] == '0':
@@ -341,7 +370,7 @@ def verifcontract():
     elif config['Version']['Type'] == '0':
         webbrowser.open_new_tab('https://bscscan.com/tx/'+web3.toHex(tx_token))
     print('[' + date_time + ']' +  " [Verf] Snipe Success [Verif] | Version BUSD...") 
-    os.system('py SnipeCrypt.py')
+    os.system('py SnipeCrypt.pyc')
     exit()
 # Buy BNB ------------------------------------------------------------------------------------------------------------- 
 def buy_bnb():
@@ -484,7 +513,7 @@ def sell_bnb():
        webbrowser.open_new_tab('https://testnet.bscscan.com/tx/'+web3.toHex(tx_token))
     print('[' + date_time + ']' + " [Syst] Application is Restarting For (5) Seconds.")
     time.sleep(5)
-    os.system('py SnipeCrypt.py')
+    os.system('py SnipeCrypt.pyc')
     exit()
 # Sell  Function BUSD ---------------------------------------------------------------------------------------------------------
 def sell_busd():  
@@ -548,7 +577,7 @@ def sell_busd():
     elif config['Version']['Type']  == '1' :   
        webbrowser.open_new_tab('https://testnet.bscscan.com/tx/'+web3.toHex(tx_token))
     time.sleep(5)
-    os.system('py SnipeCrypt.py')
+    os.system('py SnipeCrypt.pyc')
     exit()
 
 run = True
@@ -593,5 +622,5 @@ while True:
         break
     if pil == '0':
         print('[' + date_time + ']' + " [Syst] Application is Restarting...")
-        os.system('py SnipeCrypt.py')
+        os.system('py SnipeCrypt.pyc')
         break

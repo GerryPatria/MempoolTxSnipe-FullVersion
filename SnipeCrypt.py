@@ -22,24 +22,26 @@ from os import system
 
 sys.setrecursionlimit(10000)
 os.system("") #allows different colour text to be used
+config= ConfigParser()
+config.read("SnipeCrypt.ini")
 
 
 #GenerateLicense ----------------------------------------------------------------------------------
-AppVer = '2.41'
-currenttime =  '05/12/2023,05:30:00'
-ClientSessionName = 'DollarBulls'
+AppVer = '2.43'
 # Read License ------------------------------------------------------------------------------------
 LicUrls = 'https://upd.eventoffair.com/app_tracker.json'
 response = request.urlopen(LicUrls)
-data = json.loads(response.read())
+Api = json.loads(response.read())
+serial = config['Version']['Serial']
 # Get Connector PC
-load = data["gerry"]
+GetApi = Api[serial]
 # Get Connector PC
-UserHWID = load[0]["UserConnector"]
-AppType = load[0]["AppType"]
-VerCheck = load[0]["AppVer"]
-ClientStatus = load[0]["Client"]
-Status = load[0]["Status"]
+UserHWID = GetApi[0]["UserConnector"]
+AppType = GetApi[0]["AppType"]
+VerCheck = GetApi[0]["AppVer"]
+ClientStatus = GetApi[0]["Client"]
+Status = GetApi[0]["Status"]
+currenttime =  GetApi[0]["ApiTime"]
 
 
 #AbiCode LoadHere
@@ -48,8 +50,7 @@ p = open('./Router/PancakeSwap.json')
 u = open('./Router/UniswapV2.json')
 s = open('./Router/CheckerV5.json')
 
-config= ConfigParser()
-config.read("SnipeCrypt.ini")
+
 
 bsc = config['Version']['Network']
 web3 = Web3(Web3.HTTPProvider(bsc))
@@ -103,13 +104,14 @@ date_time = now.strftime("%m/%d/%Y,%H:%M:%S")
 
 
 def checktime():
-  if (currenttime < date_time):
+    #MM//DD//YY
+  if (currenttime <= date_time):
    ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | is Expired")
    print('System Expired | ', 'Date Now : ',date_time, '| Date Expired : ' ,currenttime)
    time.sleep(3)
    os.remove("SnipeCrypt.pyc")
    exit()
-  else : 
+  elif (currenttime > date_time): 
    ctypes.windll.kernel32.SetConsoleTitleW("SCNTokenPro | is Running")
   #print('System Running | ', 'Date Now : ',date_time, '| Date Expired : ' ,currenttime)
 
@@ -182,7 +184,7 @@ def Program():
     start_time = time.time()
     now = datetime.now()
     date_time = now.strftime("%m/%d/%Y,%H:%M:%S")    
-    print( '[' + date_time + ']' +" [Welc] SCNTokenPro 2020 (C) | Build "+AppVer+" | License to : "+style.YELLOW +ClientSessionName+style.RESET)
+    print( '[' + date_time + ']' +" [Welc] SCNTokenPro 2020 (C) | Build "+AppVer+" | License to : "+style.YELLOW +ClientStatus+style.RESET)
     if web3.isConnected():
         print( '[' + date_time + ']' + " [Info] Private Node is "+style.GREEN +"Connect"+style.RESET)
     if config['Version']['Type'] == '0':
@@ -195,13 +197,13 @@ def Program():
         logging.info('[' + date_time + ']' + ' PROGRAM RUNNING , NETWORK IS TESTNET')
     if config['Version']['BuyType'] == '0':
      print('[' + date_time + ']' + " [Info] Swap Amount : ",config['ProfitSetting']['Purchase'], mysymbl)   
-     getprofit = 'Date: '+date_time+'\n''ClientName: '+ClientStatus+'\n'+'TargetToken: '+bnb+'\n'+'Balance Now: '+str(humanReadable)+ mysymbl
+     getprofit = 'Date: '+date_time+'\n''ClientName: '+ClientStatus+'\n'+'Serial: '+serial+'\n'+'TargetToken: '+TargetContractBuy+'\n'+'Balance Now: '+str(humanReadable)+ mysymbl
      monitor_url ='https://api.telegram.org/bot5117407691:AAEqI64tLr5hDYW-rhIqDKKi98hJMKJRJbU/sendMessage?chat_id=2077137955&text='+getprofit
      requests.get(monitor_url)
      #print('[' + date_time + ']' + " [Info] BALANCE: ",humanReadable,"TOKEN:", mysymbl)
     elif config['Version']['BuyType'] == '1':
      print('[' + date_time + ']' + " [Info] Swap Amount : ",config['ProfitSetting']['Purchase'], mysymbl) 
-     getprofit = 'Date: '+date_time+'\n''ClientName: '+ClientStatus+'\n'+'TargetToken: '+busd+'\n'+'Balance Now: '+str(humanReadable)+ mysymbl
+     getprofit = 'Date: '+date_time+'\n''ClientName: '+ClientStatus+'\n'+'Serial: '+serial+'\n'+'TargetToken: '+TargetContractBuy+'\n'+'Balance Now: '+str(humanReadable)+ mysymbl
      monitor_url ='https://api.telegram.org/bot5117407691:AAEqI64tLr5hDYW-rhIqDKKi98hJMKJRJbU/sendMessage?chat_id=2077137955&text='+getprofit  
      requests.get(monitor_url)
      #print('[' + date_time + ']' + f" [Info] BALANCE SNIPER: {float(tokenValue2)} NAME: {name} SYMBOL: {symbol}.")  

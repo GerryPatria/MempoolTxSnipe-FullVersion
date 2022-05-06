@@ -1,4 +1,5 @@
 ## Read This Before Using Application
+## File Name Dont Be Changed.
 
 #Feature
 • Auto Sniping Mempool Check by Liquidity.
@@ -27,14 +28,24 @@
 • Recode Console Information
 • Recode Grab API & Increase Speed Flood
 • Recode Parameter .ini
+06/05/2022 Update : 
+• Fix Api Code
+• Fix SmartChain Transaction (RUGGED)
+• Add Sandwitch Transaction Code
+• Add Parameter Api Code SnipeCrypt.ini
 
 #MenuFeature
 • - 1 : Buy
 • - 2 : Sell
-• - 3 : Verif Contract (BUSD) only
+• - 3 : Verif Contract Buy Version (BUSD) only
 • - 6 : Monitor
 • - 0 : Reload / Restart App
 
+#Monitor Menu
+• - b : Auto Buy Token.
+• - s : Auto Sell Token
+
 Any Question or Request?
-Order Direcly Message on Discord : theancient#4788
+Join on Telegram : @StartWithCode0
+Order Direcly Message : theancient#4788
 Beware Scam.

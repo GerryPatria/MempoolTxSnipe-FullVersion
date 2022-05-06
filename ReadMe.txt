@@ -36,6 +36,5 @@
 • - 0 : Reload / Restart App
 
 Any Question or Request?
-Join on Discord : https://discord.gg/rJX5VKs9
-Order Direcly Message : theancient#4788
+Order Direcly Message on Discord : theancient#4788
 Beware Scam.

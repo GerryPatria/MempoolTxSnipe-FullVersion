@@ -44,8 +44,3 @@
 #Monitor Menu
 • - b : Auto Buy Token.
 • - s : Auto Sell Token
-
-Any Question or Request?
-Join on Telegram : @StartWithCode0
-Order Direcly Message : theancient#4788
-Beware Scam.
